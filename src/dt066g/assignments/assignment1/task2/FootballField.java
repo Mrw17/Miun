@@ -22,7 +22,7 @@ public class FootballField extends JPanel {
 	
 	public FootballField() {
 		// Example how to load an football image from assets folder
-		football = new ImageIcon("assets/assignment1/football10.png").getImage();
+		football = new ImageIcon("assignment1/football10.png").getImage();
 
 	}
 

@@ -67,7 +67,6 @@ public class Triangle extends PaintObject{
      * MIN_SIZE and MAX_SIZE
      */
     private void fixSize(){
-        Random rand = new Random();
         size = generateRandomNumber(MAX_SIZE, MIN_SIZE);
     }
 

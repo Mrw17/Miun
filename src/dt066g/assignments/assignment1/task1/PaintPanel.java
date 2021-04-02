@@ -53,10 +53,14 @@ public class PaintPanel extends JPanel implements ActionListener, MouseListener 
 		// Find out if left or right mouse button was clicked
 		if (me.getButton() == MouseEvent.BUTTON1) {
 			// Left button was clicked. Lets add a drawable ball
-			drawableObjects.add(new Ball(me.getX(), me.getY()));
+			//drawableObjects.add(new Ball(me.getX(), me.getY()));
+			//Left mouse btn -> Add Triangle on screen
+			drawableObjects.add(new Triangle(me.getX(),me.getY()));
 		} else {
 			// Right button was clicked. Lets add a drawable line
-			drawableObjects.add(new Line(me.getX(), me.getY()));
+			//drawableObjects.add(new Line(me.getX(), me.getY()));
+			//Right mouse btn -> Add Rectangle on screen
+			drawableObjects.add(new Rectangle(me.getX(), me.getY()));
 		}
 	}
 

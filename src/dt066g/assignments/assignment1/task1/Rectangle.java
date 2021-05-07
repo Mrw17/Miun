@@ -81,4 +81,11 @@ public class Rectangle extends PaintObject {
         return rand.nextInt((max-min + 1) + min);
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
 }

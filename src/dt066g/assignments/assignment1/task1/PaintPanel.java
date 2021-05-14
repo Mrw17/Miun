@@ -55,6 +55,7 @@ public class PaintPanel extends JPanel implements ActionListener, MouseListener 
 			// Left button was clicked. Lets add a drawable ball
 			//drawableObjects.add(new Ball(me.getX(), me.getY()));
 			//Left mouse btn -> Add Triangle on screen
+			System.out.println("click");
 			drawableObjects.add(new Triangle(me.getX(),me.getY()));
 		} else {
 			// Right button was clicked. Lets add a drawable line

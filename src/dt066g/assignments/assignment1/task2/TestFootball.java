@@ -5,8 +5,8 @@ package dt066g.assignments.assignment1.task2;
  * @version 1.0
  */
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class TestFootball extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -30,10 +30,10 @@ public class TestFootball extends JFrame {
 		initComponents();
 
 		// The size of the window
-		setSize(400, 300);
-		
-		// NOTE! It is OK if you make the window none resizeable
+		setSize(460, 320);
 
+		// NOTE! It is OK if you make the window none resizeable
+		setResizable(false);
 		// Make the window visible
 		setVisible(true);
 	}

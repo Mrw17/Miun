@@ -12,7 +12,7 @@ public class RobberWriterTest {
 		final String testString = "Testar att översätta till och från rövarspråket!";
 		final char[] testStringAsCharArray = testString.toCharArray();
 		final char testStringFirstChar = testString.charAt(0);
-		final File path = new File("assets" + File.separator + "assignment3");
+		final File path = new File("src" + File.separator + "assets" + File.separator + "assignment3");
 		
 		try {
 			// Test all 4 write methods in RobberWriter
@@ -39,6 +39,7 @@ public class RobberWriterTest {
 			writer = new RobberWriter(new FileWriter(new File(path, "test4.txt")));
 			writer.write(testStringFirstChar);
 			writer.close();
+			System.out.println("Success");
 		} catch (IOException e) {
 			System.err.println("Error writing file: " + e.getMessage());
 			e.printStackTrace();

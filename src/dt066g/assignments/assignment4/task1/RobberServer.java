@@ -1,10 +1,9 @@
 package dt066g.assignments.assignment4.task1;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 
 /**
@@ -14,86 +13,6 @@ import java.net.Socket;
 public class RobberServer {
 	private static int PORT = 0;
 
-	// TODO: add code to:
-	// 1. wait for a datagram (message) from a client on the specified 'port'
-	// 2. translate message to robber language using RobberLanguage class from assignment 3
-	// 3. send translated message back to the client as a datagram
-	// 4. wait for a new datagram to receive
-	// 5. Optional, implement a GUI for the server
-
-	/**
-	 * Creates RobberServer with given port
-	 * @param port port that server will run on
-	 */
-	public RobberServer(int port) {
-		PORT = port;
-	}
-
-	/**
-	 * Method that runs the server
-	 * @throws Exception IO-errors
-	 */
-	private void start() throws Exception {
-		ServerSocket serverSocket = new ServerSocket(PORT);
-		printMsg("Server started on port " + PORT);
-
-
-		//Always run server
-		while(true){
-			try {
-				//Waiting for client to connect
-				Socket clientSocket = serverSocket.accept();
-				clientSocket.setSoTimeout(10000);
-				printMsg("New Client connected: " + clientSocket.getInetAddress());
-
-				//Read msg from client
-				String newMsg = readMessage(clientSocket);
-				printMsg("Message from client: " + newMsg);
-
-				//Send back translated msg
-				String toRobber = dt066g.assignments.assignment3.task1.RobberLanguage.toRobber(newMsg);
-				sendMsg(clientSocket, toRobber);
-				printMsg("Message to client: " + toRobber);
-
-				clientSocket.close();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Method responsible to send msg to client
-	 * @param clientSocket socket to the client
-	 * @param msg that will be send to client
-	 */
-	public void sendMsg(Socket clientSocket, String msg){
-		try{
-			if(clientSocket != null && !clientSocket.isClosed()) {
-				DataOutputStream dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-				dataOutputStream.writeUTF(msg);
-			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 *
-	 * @param clientSocket socket to the client communication
-	 * @return msg from client or null if it not could be read
-	 * @throws IOException if IOException occurred when communicated
-	 */
-	public String readMessage(Socket clientSocket) throws IOException {
-		DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
-		if(!clientSocket.isClosed()){
-			return dis.readUTF();
-		}
-		else
-			return null;
-	}
 
 	/**
 	 * Running the program
@@ -109,9 +28,91 @@ public class RobberServer {
 		}
 	}
 
+
+	/**
+	 * Creates RobberServer with given port
+	 * @param port port that server will run on
+	 */
+	public RobberServer(int port) {
+		PORT = port;
+	}
+
+	/**
+	 * Method that runs the server
+	 * @throws Exception IO-errors
+	 */
+	private void start() throws Exception {
+
+		printMsg("Server started on port " + PORT);
+		while(true){
+			DatagramSocket datagramSocket = new DatagramSocket(PORT);
+
+			//Read message from client
+			DatagramSettings datagramSettings = readMsg(datagramSocket);
+			sendAnswer(datagramSocket, datagramSettings);
+
+			datagramSocket.close();
+		}
+
+	}
+
+	/**
+	 * Will read DatagramPackets
+	 * @param datagramSocket that message will be sent on
+	 * @return DatagramPacketSettings-object that carries data thad is needed for receiving data
+	 * @throws IOException if something went wrong
+	 */
+	private DatagramSettings readMsg(DatagramSocket datagramSocket) throws IOException {
+		DatagramSettings datagramSettings = new DatagramSettings();
+		int bufferSize = 1024;
+		byte[] buffer = new byte[bufferSize];
+		//Reads msg
+		DatagramPacket dp = new DatagramPacket(buffer, bufferSize);
+		datagramSocket.receive(dp);
+
+		//Saves information that is needed
+		datagramSettings.setInetAddress(dp.getAddress());
+		datagramSettings.setPort(dp.getPort());
+		datagramSettings.setMsg(new String(dp.getData(), 0, dp.getLength()));
+
+		printMsg(String.format("Message from client on %s:%s : %s", datagramSettings.getInetAddress(), datagramSettings.getPort(), datagramSettings.getMsg()));
+		return datagramSettings;
+	}
+
+	/**
+	 * Sends a answer-message to the client
+	 * @param datagramSocket that message will be put on
+	 * @param datagramSettings settings that is needed for communication
+	 * @throws IOException if something went wrong
+	 */
+	private void sendAnswer(DatagramSocket datagramSocket, DatagramSettings datagramSettings) throws IOException {
+		//Translate answer
+		String answer = generateAnswer(datagramSettings.getMsg());
+
+		//Sends answer
+		DatagramPacket datagramPacket = new DatagramPacket(answer.getBytes(),
+				answer.length(), datagramSettings.getInetAddress(), datagramSettings.getPort());
+		datagramSocket.send(datagramPacket);
+
+		printMsg(String.format("Message to client on %s:%s : %s", datagramSettings.getInetAddress(), datagramSettings.getPort(), datagramSettings.getMsg()));
+
+	}
+
+	/**
+	 * Generate a answer to the client by translating
+	 * message from client to robber-language
+	 * @param msg to be translated
+	 * @return message that has been translated to robber-language
+	 */
+	private String generateAnswer(String msg){
+		return dt066g.assignments.assignment3.task1.RobberLanguage.toRobber(msg);
+	}
+
+
+
 	/**
 	 * Prints a msg to console
-	 * @param msg
+	 * @param msg to be shown to user
 	 */
 	private void printMsg(String msg){
 		System.out.println(msg);
@@ -119,8 +120,8 @@ public class RobberServer {
 
 	/**
 	 * Fix port, uses parameters from user or using default (10001)
-	 * @param args
-	 * @return
+	 * @param args with parameters from user
+	 * @return port number that will be used on server
 	 */
 	private static int getPortNumber(String[] args){
 		int output = 10001;
@@ -133,5 +134,39 @@ public class RobberServer {
 		}
 
 		return output;
+	}
+
+	/**
+	 * Private class that's used to encapsulate DatagramPacket settings
+	 * to simplify the handle of settings.
+	 */
+	private static class DatagramSettings {
+		private String msg = "";
+		private InetAddress inetAddress;
+		private int port;
+
+		public String getMsg() {
+			return msg;
+		}
+
+		public void setMsg(String msg) {
+			this.msg = msg;
+		}
+
+		public InetAddress getInetAddress() {
+			return inetAddress;
+		}
+
+		public void setInetAddress(InetAddress inetAddress) {
+			this.inetAddress = inetAddress;
+		}
+
+		public int getPort() {
+			return port;
+		}
+
+		public void setPort(int port) {
+			this.port = port;
+		}
 	}
 }

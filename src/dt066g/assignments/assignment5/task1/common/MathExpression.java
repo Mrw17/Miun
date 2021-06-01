@@ -1,4 +1,4 @@
-package dt066g.assignments.assignment5.task1;
+package dt066g.assignments.assignment5.task1.common;
 
 import java.io.Serializable;
 import java.util.Random;

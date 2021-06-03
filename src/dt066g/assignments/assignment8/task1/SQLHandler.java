@@ -18,10 +18,9 @@ public class SQLHandler {
 	/**
 	 * Unmarshal XML data from the specified file and return the resulting content tree as a University object.  
 	 * 
-	 * @param xmlFile The XML file containing courses for an university.
 	 * @return An University object with all courses in xmlFile or null if an error occurs.
 	 */
-	public static University getUniversity(File xmlFile) {
+	public static University getUniversity() {
 		University university = new University();
 		try{
 			connection = DriverManager.getConnection(Util.DB_URL, Util.DB_USER, Util.DB_PASSWORD);

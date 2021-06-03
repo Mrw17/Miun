@@ -112,7 +112,7 @@ public class Main extends JFrame {
 	 */
 	private void loadUniversity() {
 		// Get the university
-		university = SQLHandler.getUniversity(SQLHandler.XML_UNIVERSITY);
+		university = SQLHandler.getUniversity();
 		
 		// Add all courses to the JList's model
 		if (university != null && university.getCourses() != null) {

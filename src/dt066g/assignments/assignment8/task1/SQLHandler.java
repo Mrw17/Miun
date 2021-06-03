@@ -131,7 +131,6 @@ public class SQLHandler {
 			Course course = new Course(course_code,institution_code,level,name,points,progression,subject_code);
 			courses.add(course);
 		}
-		System.out.println(courses.size());
 		result.close();
 		statement.close();
 		return courses;

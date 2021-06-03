@@ -16,9 +16,8 @@ public class SQLHandler {
 	private static Connection connection;
 
 	/**
-	 * Unmarshal XML data from the specified file and return the resulting content tree as a University object.  
-	 * 
-	 * @return An University object with all courses in xmlFile or null if an error occurs.
+	 * Loads courses, subject and institute from DB
+	 * @return An University object with all courses and their data
 	 */
 	public static University getUniversity() {
 		University university = new University();
